@@ -103,7 +103,7 @@ A simple Node.js API with CRUD operations for PostgreSQL database, designed for 
    sudo chmod +x /usr/local/bin/docker-compose
    ```
 
-3. **Deploy your application:**
+2. **Deploy your application:**
 
    ```bash
    # Clone your repository
