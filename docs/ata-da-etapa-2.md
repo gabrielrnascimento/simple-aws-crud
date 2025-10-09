@@ -73,9 +73,11 @@ sudo service vsftpd status
 
 ##### 4. Configuração das Regras de Entrada (Inbound Rules) da EC2
 
+- **Porta 22**: 0.0.0.0/0 (SSH)
 - **Portas 20-21**: 0.0.0.0/0 (Custom TCP)
 - **Portas 12000-12100**: 0.0.0.0/0 (Custom TCP)
-- **Porta 22**: 0.0.0.0/0 (SSH)
+
+![Inbound Rules](./images/ftp/ec2-inbound-rules.png)
 
 ##### 5. Configuração do Firewall UFW
 
@@ -91,6 +93,8 @@ sudo ufw enable
 
 - Regras aplicadas com sucesso
 - Firewall ativado e funcionando
+
+![UFW Rules](./images/ftp/ec2-firewall-setup.png)
 
 ##### 6. Criação de Usuário FTP
 
@@ -144,7 +148,11 @@ sudo mkdir -p /etc/vsftpd
 sudo vim /etc/vsftpd/user_list
 ```
 
-**Conteúdo do arquivo**: `aluno`
+**Conteúdo do arquivo `/etc/vsftpd/user_list`**:
+
+```bash
+aluno
+```
 
 ##### 10. Configuração do Diretório de Compartilhamento
 
@@ -193,7 +201,7 @@ Using binary mode to transfer files.
 
 ##### 1. Configuração do Elastic IP
 
-- **IP Público**: 35.170.162.90
+- **IP Público**: `35.170.162.90`
 - Associado à instância EC2 para acesso externo consistente
 
 ##### 2. Conexão SSH via Elastic IP
@@ -204,7 +212,7 @@ ssh -i "Eixo5_2025.2.pem" ubuntu@35.170.162.90
 
 ##### 3. Teste via FileZilla
 
-- **Host**: 35.170.162.90
+- **Host**: `35.170.162.90`
 - **Usuário**: aluno
 - **Senha**: aluno123
 - **Porta**: 21 (padrão)
@@ -213,7 +221,11 @@ ssh -i "Eixo5_2025.2.pem" ubuntu@35.170.162.90
 **Configurações importantes no FileZilla**:
 
 - Marcar opção "Modo Passivo" para evitar problemas de firewall
-- Usar modo binário para transferência de arquivos
+![FileZilla](./images/ftp/filezilla-settings.png)
+
+**Resultado do teste**:
+
+![FileZilla](./images/ftp/filezilla-test.png)
 
 ##### Resultados Obtidos
 
