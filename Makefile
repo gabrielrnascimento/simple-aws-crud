@@ -12,16 +12,12 @@ help:
 	@echo "  logs-grep     	- Search logs for specific pattern (usage: make logs-grep PATTERN='error')"
 	@echo "  clean-logs    	- Clean up old logs"
 	@echo ""
-	@echo "Container Management:"
-	@echo "  status        	- Show container status"
-	@echo "  restart       	- Restart all containers"
-	@echo "  stop          	- Stop all containers"
-	@echo "  start         	- Start all containers"
-	@echo "  build         	- Build and start containers"
-	@echo ""
-	@echo "Production Deployment:"
-	@echo "  deploy-prod   	- Deploy to production"
-	@echo "  health        	- Show container health status"
+	@echo "API Container Management:"
+	@echo "  status        	- Show API container status"
+	@echo "  restart       	- Restart API container"
+	@echo "  stop          	- Stop API container"
+	@echo "  start         	- Start API container"
+	@echo "  build         	- Build and start API container"
 	@echo ""
 
 # Show API container logs
@@ -48,7 +44,6 @@ logs-grep:
 	@echo "🔍 Searching API logs for: $(PATTERN)"
 	@docker logs postgres-crud-api 2>&1 | grep -i "$(PATTERN)" || echo "No matches found"
 
-
 # Clean up old logs (requires Docker 20.10+)
 clean-logs:
 	@echo "🧹 Cleaning up old logs..."
@@ -60,38 +55,26 @@ status:
 	@echo "📊 Container Status:"
 	@docker-compose ps
 
-# Restart all containers
+# Restart API container
 restart:
-	@echo "🔄 Restarting all containers..."
+	@echo "🔄 Restarting API container..."
 	@docker-compose restart
-	@echo "✅ Containers restarted"
+	@echo "✅ API container restarted"
 
-# Stop all containers
+# Stop API container
 stop:
-	@echo "🛑 Stopping all containers..."
+	@echo "🛑 Stopping API container..."
 	@docker-compose down
-	@echo "✅ Containers stopped"
+	@echo "✅ API container stopped"
 
-# Start all containers
+# Start API container production
 start:
-	@echo "🚀 Starting all containers..."
-	@docker-compose up -d
-	@echo "✅ Containers started"
+	@echo "🚀 Starting API container..."
+	@docker-compose -f docker-compose.prod.yml up -d
+	@echo "✅ API container started"
 
-# Build and start containers
+# Build and start API container
 build:
-	@echo "🔨 Building and starting containers..."
-	@docker-compose up -d --build
-	@echo "✅ Containers built and started"
-
-# Production deployment
-deploy-prod:
-	@echo "🚀 Deploying to production..."
+	@echo "🔨 Building and starting API container..."
 	@docker-compose -f docker-compose.prod.yml up -d --build
-	@echo "✅ Production deployment completed"
-
-# Show container health status
-health:
-	@echo "🏥 Container Health Status:"
-	@docker inspect --format='{{.State.Health.Status}}' postgres-crud-api 2>/dev/null || echo "No health check configured"
-	@docker inspect --format='{{.State.Status}}' postgres-crud-db 2>/dev/null || echo "Database container status"
+	@echo "✅ API container built and started"
