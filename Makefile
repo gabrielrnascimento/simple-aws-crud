@@ -6,8 +6,7 @@
 # Default target
 help:
 	@echo "Docker Log Management Commands:"
-	@echo "  logs-api      - Show API container logs"
-	@echo "  logs-all      - Show logs from all containers"
+	@echo "  logs      - Show API container logs"
 	@echo "  logs-follow   - Follow API logs in real-time"
 	@echo "  logs-tail     - Show last 50 lines of API logs"
 	@echo "  logs-grep     - Search logs for specific pattern (usage: make logs-grep PATTERN='error')"
