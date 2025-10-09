@@ -37,41 +37,9 @@ else
     echo "⚠️  No existing default configuration found"
 fi
 
-# Fix the duplicate location / block in nginx.config
-echo "🔧 Fixing duplicate location blocks..."
-cat > nginx.config.fixed << 'EOF'
-server {
-    listen 80;
-    server_name _;
-    root /var/www/app;
-    
-    # Serve static files
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Proxy API requests to your Node.js app
-    location /api/ {
-        proxy_pass http://127.0.0.1:3000/api/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-    
-    # Health check endpoint
-    location /health {
-        proxy_pass http://127.0.0.1:3000/health;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-EOF
-
-echo "📝 Replacing nginx configuration..."
-cp nginx.config.fixed /etc/nginx/sites-available/default
+# Use the nginx.config file
+echo "📝 Using nginx.config file..."
+cp nginx.config /etc/nginx/sites-available/default
 
 # Test nginx configuration
 echo "🧪 Testing nginx configuration..."
@@ -118,8 +86,7 @@ else
     echo "   Please copy it manually to /var/www/app/"
 fi
 
-# Clean up temporary file
-rm -f nginx.config.fixed
+# Configuration file used successfully
 
 echo ""
 echo "🎉 Configuration update completed successfully!"
