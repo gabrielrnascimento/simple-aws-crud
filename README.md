@@ -146,6 +146,127 @@ For production deployments, you can set environment variables globally on your E
    docker-compose -f docker-compose.prod.yml up -d --build
    ```
 
+#### Nginx Configuration and Setup
+
+This project includes nginx configuration for serving your application with proper API proxying and static file serving.
+
+**Prerequisites:**
+
+- Nginx installed on your EC2 instance
+- Your Node.js application running on port 3000
+
+**Install Nginx (if not already installed):**
+
+```bash
+# Amazon Linux 2 / CentOS / RHEL
+sudo yum install -y nginx
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install -y nginx
+
+# Start and enable nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+**Configure Nginx:**
+
+The project includes two convenient Makefile targets for nginx setup:
+
+1. **Complete Setup** (recommended for first-time setup):
+
+   ```bash
+   make nginx-setup
+   ```
+
+   This will:
+   - Validate required files (`update-nginx-config.sh` and `index.html`)
+   - Run the nginx configuration script
+   - Set up proper file permissions
+   - Copy your `index.html` to the web directory
+
+2. **Configuration Update Only** (for updates):
+
+   ```bash
+   make nginx-update
+   ```
+
+   This will:
+   - Update nginx configuration only
+   - Reload nginx with new settings
+
+**Manual Configuration:**
+
+If you prefer to configure nginx manually:
+
+```bash
+# Make the script executable
+chmod +x update-nginx-config.sh
+
+# Run the configuration script
+sudo ./update-nginx-config.sh
+```
+
+**What the nginx configuration does:**
+
+- **Static Files**: Serves your `index.html` and other static files from `/var/www/app`
+- **API Proxying**: Routes `/api/*` requests to your Node.js app on port 3000
+- **Health Checks**: Proxies `/health` requests to your app's health endpoint
+- **Fallback**: Serves `index.html` for any unmatched routes (useful for SPA routing)
+
+**Nginx Configuration Details:**
+
+The `nginx.config` file includes:
+
+- Server block listening on port 80
+- Root directory set to `/var/www/app`
+- Proxy configuration for API routes with proper headers
+- Health check endpoint proxying
+- Static file serving with fallback to `index.html`
+
+**Security Groups:**
+
+Make sure your EC2 security group allows:
+
+- **Port 80** (HTTP) - for nginx
+- **Port 22** (SSH) - for server access
+- **Port 3000** (optional) - only if you need direct access to your Node.js app
+
+**Troubleshooting Nginx:**
+
+```bash
+# Check nginx status
+sudo systemctl status nginx
+
+# Test nginx configuration
+sudo nginx -t
+
+# View nginx logs
+sudo tail -f /var/log/nginx/error.log
+sudo tail -f /var/log/nginx/access.log
+
+# Restart nginx
+sudo systemctl restart nginx
+
+# Reload configuration
+sudo systemctl reload nginx
+```
+
+**File Structure After Setup:**
+
+```bash
+/var/www/app/          # Web directory
+├── index.html         # Your frontend application
+└── ...                # Other static files
+
+/etc/nginx/
+├── sites-available/
+│   └── default        # Your nginx configuration
+└── backups/           # Configuration backups
+    └── default_backup_*.conf
+```
+
 ## Environment Variables
 
 ### Development (.env)
@@ -335,6 +456,10 @@ docker logs -f postgres-crud-api
 ├── install-docker.sh           # Docker installation for Amazon Linux
 ├── install-docker-ubuntu.sh   # Docker installation for Ubuntu/Debian
 ├── deploy.sh                   # EC2 deployment script
+├── nginx.config                # Nginx configuration template
+├── update-nginx-config.sh      # Nginx setup script
+├── index.html                  # Frontend application
+├── Makefile                    # Build automation and deployment commands
 ├── package.json                # Dependencies
 └── README.md                   # This file
 ```
