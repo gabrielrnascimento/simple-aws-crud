@@ -2,19 +2,6 @@
 
 A simple Node.js API with CRUD operations for PostgreSQL database, designed for deployment on EC2 with RDS.
 
-## Features
-
-- ✅ Complete CRUD operations for Users and Products
-- ✅ PostgreSQL database integration
-- ✅ Docker containerization
-- ✅ Production-ready configuration
-- ✅ Health check endpoints
-- ✅ Input validation
-- ✅ Error handling
-- ✅ Security headers (Helmet)
-- ✅ CORS support
-- ✅ Request logging
-
 ## API Endpoints
 
 ### Health Check
@@ -68,7 +55,48 @@ A simple Node.js API with CRUD operations for PostgreSQL database, designed for 
 
 ### Production Deployment on EC2
 
-1. **Prepare your EC2 instance:**
+#### Setting Environment Variables on EC2
+
+For production deployments, you can set environment variables globally on your EC2 instance using `/etc/environment`:
+
+1. **Edit the environment file:**
+
+   ```bash
+   sudo vim /etc/environment
+   ```
+
+2. **Add your environment variables:**
+
+   ```bash
+   DB_HOST=your-rds-endpoint.amazonaws.com
+   DB_PORT=5432
+   DB_NAME=your-database-name
+   DB_USER=your-username
+   DB_PASSWORD=your-password
+   PORT=3000
+   NODE_ENV=production
+   ```
+
+3. **Apply the changes:**
+
+   ```bash
+   # Reload environment variables for current session
+   source /etc/environment
+   
+   # Or restart the system to apply globally
+   sudo reboot
+   ```
+
+4. **Verify the variables are set:**
+
+   ```bash
+   echo $DB_HOST
+   echo $NODE_ENV
+   ```
+
+**Note:** Variables set in `/etc/environment` are available system-wide and will persist across reboots. This is useful when you want to avoid using `.env` files in production.
+
+#### Prepare your EC2 instance
 
    **For Amazon Linux 2 / CentOS / RHEL:**
 
@@ -103,7 +131,7 @@ A simple Node.js API with CRUD operations for PostgreSQL database, designed for 
    sudo chmod +x /usr/local/bin/docker-compose
    ```
 
-2. **Deploy your application:**
+#### Deploy your application
 
    ```bash
    # Clone your repository
@@ -115,7 +143,7 @@ A simple Node.js API with CRUD operations for PostgreSQL database, designed for 
    # Edit .env.production with your RDS credentials
    
    # Build and run
-   docker-compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+   docker-compose -f docker-compose.prod.yml up -d --build
    ```
 
 ## Environment Variables
