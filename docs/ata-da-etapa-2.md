@@ -244,5 +244,153 @@ A configuração do servidor FTP foi concluída com sucesso, permitindo acesso s
 
 ---
 
-**Data**: Outubro 2024  
+### 📁 Servidor Web + Banco de Dados - Gabriel dos Reis Nascimento
+
+#### Configuração do Servidor
+
+##### 1. Configurar Security Groups
+
+##### 1.1. Security Group para servidor web
+
+- Nome: `servidor-web`
+- Descrição: `Security Group para servidor web`
+- Regras de entrada:
+  - SSH: `0.0.0.0/0:22`
+  - HTTP: `0.0.0.0/0:80`
+  - HTTPS: `0.0.0.0/0:443`
+- Regras de saída:
+  - Todos: `0.0.0.0/0:0`
+
+![Security Group para servidor web](./images/web-and-db/web-server-security-group-setup.png)
+
+##### 1.2. Security Group para banco de dados
+
+- Nome: `banco-de-dados`
+- Descrição: `Security Group para banco de dados`
+- Regras de entrada:
+  - PostgreSQL do security group `servidor-web`: `0.0.0.0/0:5432`
+- Regras de saída:
+  - Todos: `0.0.0.0/0`
+
+![Security Group para banco de dados](./images/web-and-db/db-security-group-setup.png)
+
+##### 2. Criar o RDS PostgreSQL
+
+- Nome: `postgres-crud-database`
+- Engine: PostgreSQL
+- Versão: `17.4-R1`
+- Template: Sandbox
+- Instance class: `db.t4g.micro`
+- Storage type: `gp2`
+- Storage: `20GB`
+- Security Group: `banco-de-dados`
+- Initial database: `test_database`
+
+##### 3. Criar o EC2 para o servidor web
+
+- Nome: `servidor-web`
+- Sistema operacional: Ubuntu 24.04 LTS
+- Tipo de instância: `t3.micro`
+- Security Group: `servidor-web`
+- Storage: `8GB`
+
+##### 4. Configurar o servidor web
+
+##### 4.1. Acessar o servidor web
+
+```bash
+ssh -i "[chave-ssh]" ubuntu@[ip-do-servidor-web]
+```
+
+##### 4.2. Clonar o repositório e executar o script de instalação do Docker
+
+```bash
+mkdir app
+cd app
+git clone [url-do-repositorio] .
+sudo ./install-docker-ubuntu.sh
+```
+
+Sair da sessão SSH e entrar novamente para aplicar as alterações.
+
+##### 4.3. Configurar o ambiente
+
+```bash
+cp env.production.example .env
+```
+
+###### 4.3.1. Editar o arquivo .env com as credenciais do RDS
+
+```bash
+vim .env
+# Editar o arquivo .env com as credenciais do RDS
+```
+
+##### 4.4. Deploy
+
+```bash
+docker-compose -f docker-compose.prod.yml --env-file .env up -d --build
+```
+
+##### 4.5. Atualizar security group do servidor web
+
+Adicionar regra de entrada para porta 3000 do security group do servidor web para que seja possível acessar as rotas da API pela internet.
+
+##### 5. Testar a API
+
+###### 5.1. Teste de saúde
+
+```bash
+curl --location '[ip-do-servidor-web]:3000/health' \
+--header 'Content-Type: application/json' \
+--data ''
+```
+
+###### 5.2. Teste de usuários
+
+```bash
+curl --location '[ip-do-servidor-web]:3000/api/users' \
+--header 'Content-Type: application/json' \
+--data-raw '{"name": "John Doe", "email": "john@example.com", "age": 30}'
+```
+
+```bash
+curl --location '[ip-do-servidor-web]:3000/api/users' \
+--header 'Content-Type: application/json'
+```
+
+###### 5.3. Teste de produtos
+
+```bash
+curl --location '[ip-do-servidor-web]:3000/api/products' \
+--header 'Content-Type: application/json' \
+--data-raw '{"name": "Product 1", "description": "Description 1", "price": 100, "stock": 10}'
+```
+
+```bash
+curl --location '[ip-do-servidor-web]:3000/api/products' \
+--header 'Content-Type: application/json'
+```
+
+#### 6. Configurar o Nginx
+
+```bash
+sudo apt update
+sudo apt install -y nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo apt install make -y
+make nginx-setup
+```
+
+#### 7. Testar no navegador
+
+1. Acessar o servidor web via browser no endereço `http://[ip-do-servidor-web]`
+2. Validar que a interface de CRUD está sendo exibida corretamente.
+3. Testar adicionar usuários e produtos.
+
+![Interface de CRUD](./images/web-and-db/browser-crud-interface.png)
+
+---
+
 **Grupo**: Eixo 5 - LOGAM Tech
