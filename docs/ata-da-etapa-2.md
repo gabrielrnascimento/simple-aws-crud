@@ -10,40 +10,13 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 ## Membros do Grupo e Responsabilidades
 
-### Gabriel dos Reis Nascimento - Servidor FTP (vsftpd)
-
-**Status**: ✅ Concluído  
-**Descrição**: Implementação de servidor FTP seguro para compartilhamento de arquivos com acesso controlado.
-
----
-
-### [Nome do Membro] - AD com DNS e GPO
-
-**Status**: ⏳ Pendente / ✅ Concluído  
-**Descrição**: Configuração do Active Directory com serviços de DNS e implementação de Group Policy Objects.
-
----
-
-### [Nome do Membro] - VPN (OpenVPN)
-
-**Status**: ⏳ Pendente / ✅ Concluído  
-**Descrição**: Configuração de servidor VPN utilizando OpenVPN para acesso remoto seguro.
-
----
-
-### [Nome do Membro] - Servidor DHCP
-
-**Status**: ⏳ Pendente / ✅ Concluído  
-**Descrição**: Implementação de servidor DHCP para gerenciamento automático de endereços IP na rede.
-
----
-
-### [Nome do Membro] - Servidor Web + Banco de Dados
-
-**Status**: ⏳ Pendente / ✅ Concluído  
-**Descrição**: Configuração de servidor web com banco de dados integrado para aplicações corporativas.
-
----
+| Membro | Serviço | Status | Descrição |
+|--------|---------|--------|-----------|
+| Gabriel dos Reis Nascimento | Servidor FTP (vsftpd) | ✅ Concluído | Implementação de servidor FTP seguro para compartilhamento de arquivos com acesso controlado. |
+| Gabriel dos Reis Nascimento | Servidor Web + Banco de Dados | ⏳ Pendente / ✅ Concluído | Configuração de servidor web com banco de dados integrado para aplicações corporativas. |
+| [Nome do Membro] | AD com DNS e GPO | ⏳ Pendente / ✅ Concluído | Configuração do Active Directory com serviços de DNS e implementação de Group Policy Objects. |
+| [Nome do Membro] | VPN (OpenVPN) | ⏳ Pendente / ✅ Concluído | Configuração de servidor VPN utilizando OpenVPN para acesso remoto seguro. |
+| [Nome do Membro] | Servidor DHCP | ⏳ Pendente / ✅ Concluído | Implementação de servidor DHCP para gerenciamento automático de endereços IP na rede. |
 
 ## Detalhamento das Implementações
 
