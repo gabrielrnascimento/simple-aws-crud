@@ -12,8 +12,8 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 | Membro | Serviço | Status | Descrição |
 |--------|---------|--------|-----------|
-| Gabriel dos Reis Nascimento | Servidor FTP (vsftpd) | ✅ Concluído | Implementação de servidor FTP seguro para compartilhamento de arquivos com acesso controlado. |
 | Gabriel dos Reis Nascimento | Servidor Web + Banco de Dados | ⏳ Pendente / ✅ Concluído | Configuração de servidor web com banco de dados integrado para aplicações corporativas. |
+| [Nome do Membro] | Servidor FTP (vsftpd) | ⏳ Pendente / ✅ Concluído | Implementação de servidor FTP seguro para compartilhamento de arquivos com acesso controlado. |
 | [Nome do Membro] | AD com DNS e GPO | ⏳ Pendente / ✅ Concluído | Configuração do Active Directory com serviços de DNS e implementação de Group Policy Objects. |
 | [Nome do Membro] | VPN (OpenVPN) | ⏳ Pendente / ✅ Concluído | Configuração de servidor VPN utilizando OpenVPN para acesso remoto seguro. |
 | [Nome do Membro] | Servidor DHCP | ⏳ Pendente / ✅ Concluído | Implementação de servidor DHCP para gerenciamento automático de endereços IP na rede. |
@@ -24,19 +24,27 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 #### Configuração do Servidor
 
-##### 1. Acesso à VM
+##### 1. Criar o EC2 para o servidor ftp
 
-- Conectado à instância EC2 via SSH
-- Sistema operacional: Ubuntu
-- Usuário: ubuntu
+- Nome: `servidor-ftp`
+- Sistema operacional: Ubuntu 24.04 LTS
+- Tipo de instância: `t3.micro`
+- Security Group: `servidor-ftp`
+- Storage: `8GB`
 
-##### 2. Instalação do vsftpd
+##### 2. Acessar o servidor ftp
+
+```bash
+ssh -i "[chave-ssh]" ubuntu@[ip-do-servidor-ftp]
+```
+
+##### 3. Instalação e Configuração do vsftpd
 
 ```bash
 sudo apt install vsftpd -y
 ```
 
-##### 3. Verificação do Status do Serviço
+##### 3.1. Verificação do Status do Serviço
 
 ```bash
 sudo service vsftpd status
@@ -46,9 +54,9 @@ sudo service vsftpd status
 
 ##### 4. Configuração das Regras de Entrada (Inbound Rules) da EC2
 
-- **Porta 22**: 0.0.0.0/0 (SSH)
-- **Portas 20-21**: 0.0.0.0/0 (Custom TCP)
-- **Portas 12000-12100**: 0.0.0.0/0 (Custom TCP)
+- **Porta 22**: `0.0.0.0/0` (SSH)
+- **Portas 20-21**: `0.0.0.0/0` (Custom TCP)
+- **Portas 12000-12100**: `0.0.0.0/0` (Custom TCP)
 
 ![Inbound Rules](./images/ftp/ec2-inbound-rules.png)
 
@@ -92,6 +100,8 @@ sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bkp
 **Arquivo de backup**: `/etc/vsftpd.conf.bkp`
 
 ##### 8. Configuração do vsftpd.conf
+
+Descomentar linha `#write_enable=YES` no arquivo `/etc/vsftpd.conf`.
 
 Adicionadas as seguintes configurações no arquivo `/etc/vsftpd.conf`:
 
